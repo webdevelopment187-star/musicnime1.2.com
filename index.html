@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime Music Player</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+  <!-- ========================================= -->
+  <!-- LOADING SCREEN                            -->
+  <!-- ========================================= -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-disc">
+        <div class="disc-groove"></div>
+        <div class="disc-label"></div>
+      </div>
+      <h1 class="loading-title">Anime Music Player</h1>
+      <p class="loading-subtitle">Loading your music universe...</p>
+      <div class="loading-bar-container">
+        <div class="loading-bar"></div>
+      </div>
+      <div class="loading-equalizer">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- APP CONTAINER                             -->
+  <!-- ========================================= -->
+  <div id="app" class="app hidden">
+
+    <!-- ========================================= -->
+    <!-- SIDEBAR NAVIGATION                        -->
+    <!-- ========================================= -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-disc">
+          <i class="ph-fill ph-disc"></i>
+        </div>
+        <span class="logo-text">AnimeMusic</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <p class="nav-label">Menu</p>
+          <button class="nav-item active" data-page="home">
+            <i class="ph-fill ph-house"></i>
+            <span>Home</span>
+          </button>
+          <button class="nav-item" data-page="library">
+            <i class="ph-fill ph-books"></i>
+            <span>Library</span>
+          </button>
+          <button class="nav-item" data-page="upload">
+            <i class="ph-fill ph-upload-simple"></i>
+            <span>Upload Music</span>
+          </button>
+        </div>
+
+        <div class="nav-section">
+          <p class="nav-label">Collection</p>
+          <button class="nav-item" data-page="favorites">
+            <i class="ph-fill ph-heart"></i>
+            <span>Favorites</span>
+          </button>
+          <button class="nav-item" data-page="recently">
+            <i class="ph-fill ph-clock-counter-clockwise"></i>
+            <span>Recently Played</span>
+          </button>
+        </div>
+
+        <div class="nav-section">
+          <p class="nav-label">System</p>
+          <button class="nav-item" data-page="settings">
+            <i class="ph-fill ph-gear"></i>
+            <span>Settings</span>
+          </button>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="now-playing-mini" id="sidebar-now-playing">
+          <div class="mini-cover" id="mini-cover"></div>
+          <div class="mini-info">
+            <p class="mini-title" id="mini-title">No song playing</p>
+            <p class="mini-artist" id="mini-artist">-</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="sidebar-toggle" id="sidebar-toggle">
+        <i class="ph ph-caret-left"></i>
+      </button>
+    </aside>
+
+    <!-- ========================================= -->
+    <!-- MOBILE HEADER                             -->
+    <!-- ========================================= -->
+    <header class="mobile-header" id="mobile-header">
+      <button class="mobile-menu-btn" id="mobile-menu-btn">
+        <i class="ph ph-list"></i>
+      </button>
+      <span class="mobile-logo">AnimeMusic</span>
+      <button class="mobile-search-btn" id="mobile-search-btn">
+        <i class="ph ph-magnifying-glass"></i>
+      </button>
+    </header>
+
+    <!-- ========================================= -->
+    <!-- MOBILE SIDEBAR OVERLAY                    -->
+    <!-- ========================================= -->
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+
+    <!-- ========================================= -->
+    <!-- MAIN CONTENT AREA                         -->
+    <!-- ========================================= -->
+    <main class="main-content" id="main-content">
+
+      <!-- ========================================= -->
+      <!-- SEARCH & FILTER BAR                       -->
+      <!-- ========================================= -->
+      <div class="top-bar" id="top-bar">
+        <div class="search-box">
+          <i class="ph ph-magnifying-glass"></i>
+          <input type="text" id="search-input" placeholder="Search songs, artists, genres...">
+          <button class="search-clear hidden" id="search-clear">
+            <i class="ph ph-x"></i>
+          </button>
+        </div>
+        <div class="filter-chips" id="filter-chips">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="recent">Recent</button>
+          <button class="chip" data-filter="favorite">Favorites</button>
+        </div>
+      </div>
+
+      <!-- ========================================= -->
+      <!-- HOME PAGE                                 -->
+      <!-- ========================================= -->
+      <section class="page active" id="page-home">
+        <div class="hero-section">
+          <div class="hero-bg" id="hero-bg"></div>
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <h1 class="hero-title">Your Anime Music Universe</h1>
+            <p class="hero-subtitle">Upload, play, and organize your favorite anime songs in one beautiful place.</p>
+            <div class="hero-stats">
+              <div class="stat-item">
+                <span class="stat-number" id="stat-total-songs">0</span>
+                <span class="stat-label">Songs</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" id="stat-total-artists">0</span>
+                <span class="stat-label">Artists</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" id="stat-total-favorites">0</span>
+                <span class="stat-label">Favorites</span>
+              </div>
+            </div>
+            <button class="hero-cta" id="hero-upload-btn">
+              <i class="ph-fill ph-upload-simple"></i>
+              Upload Music
+            </button>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h2>Recently Added</h2>
+          <button class="view-all" data-page="library">View All</button>
+        </div>
+        <div class="song-grid" id="recent-grid"></div>
+
+        <div class="section-header">
+          <h2>Your Favorites</h2>
+          <button class="view-all" data-page="favorites">View All</button>
+        </div>
+        <div class="song-grid" id="favorites-grid"></div>
+      </section>
+
+      <!-- ========================================= -->
+      <!-- LIBRARY PAGE                              -->
+      <!-- ========================================= -->
+      <section class="page" id="page-library">
+        <div class="page-header">
+          <h1>Your Library</h1>
+          <p>All your uploaded songs in one place</p>
+        </div>
+        <div class="library-toolbar">
+          <div class="sort-dropdown">
+            <button class="sort-btn" id="sort-btn">
+              <i class="ph ph-sort-ascending"></i>
+              <span>Sort by</span>
+            </button>
+            <div class="sort-menu hidden" id="sort-menu">
+              <button class="sort-option active" data-sort="newest">Newest First</button>
+              <button class="sort-option" data-sort="oldest">Oldest First</button>
+              <button class="sort-option" data-sort="name">Name A-Z</button>
+              <button class="sort-option" data-sort="artist">Artist A-Z</button>
+            </div>
+          </div>
+          <button class="upload-fab" id="library-upload-btn">
+            <i class="ph-fill ph-plus"></i>
+            Add Song
+          </button>
+        </div>
+        <div class="song-list" id="library-list"></div>
+        <div class="empty-state hidden" id="library-empty">
+          <div class="empty-icon">
+            <i class="ph ph-music-notes"></i>
+          </div>
+          <h3>No songs yet</h3>
+          <p>Upload your first song to get started</p>
+          <button class="btn-primary" onclick="app.navigate('upload')">
+            <i class="ph-fill ph-upload-simple"></i>
+            Upload Music
+          </button>
+        </div>
+      </section>
+
+      <!-- ========================================= -->
+      <!-- UPLOAD PAGE                               -->
+      <!-- ========================================= -->
+      <section class="page" id="page-upload">
+        <div class="page-header">
+          <h1>Upload Music</h1>
+          <p>Add your favorite anime songs to your library</p>
+        </div>
+        <div class="upload-area" id="upload-drop-zone">
+          <div class="upload-zone-content">
+            <div class="upload-icon">
+              <i class="ph-fill ph-cloud-arrow-up"></i>
+            </div>
+            <h3>Drag & Drop your music here</h3>
+            <p>or click to browse files</p>
+            <span class="upload-formats">Supports MP3, WAV</span>
+          </div>
+          <input type="file" id="music-file-input" accept="audio/mp3,audio/wav,audio/mpeg,audio/*" hidden>
+        </div>
+        <div class="upload-form" id="upload-form">
+          <h3 class="form-title">Song Details</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="upload-title">Song Title *</label>
+              <input type="text" id="upload-title" placeholder="Enter song title">
+            </div>
+            <div class="form-group">
+              <label for="upload-artist">Artist *</label>
+              <input type="text" id="upload-artist" placeholder="Enter artist name">
+            </div>
+            <div class="form-group">
+              <label for="upload-genre">Genre</label>
+              <select id="upload-genre">
+                <option value="Anime">Anime</option>
+                <option value="J-Pop">J-Pop</option>
+                <option value="Rock">Rock</option>
+                <option value="Pop">Pop</option>
+                <option value="Electronic">Electronic</option>
+                <option value="Classical">Classical</option>
+                <option value="OST">OST</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Cover Image</label>
+              <div class="cover-upload" id="cover-upload">
+                <input type="file" id="cover-file-input" accept="image/*" hidden>
+                <div class="cover-preview" id="cover-preview">
+                  <i class="ph ph-image"></i>
+                  <span>Click to add cover</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="upload-actions">
+            <button class="btn-secondary" id="upload-cancel">Cancel</button>
+            <button class="btn-primary" id="upload-submit">
+              <i class="ph-fill ph-check"></i>
+              Save Song
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================= -->
+      <!-- FAVORITES PAGE                            -->
+      <!-- ========================================= -->
+      <section class="page" id="page-favorites">
+        <div class="page-header">
+          <h1>Favorites</h1>
+          <p>Your most loved songs</p>
+        </div>
+        <div class="song-grid" id="favorites-list"></div>
+        <div class="empty-state hidden" id="favorites-empty">
+          <div class="empty-icon">
+            <i class="ph ph-heart"></i>
+          </div>
+          <h3>No favorites yet</h3>
+          <p>Mark songs as favorite to see them here</p>
+        </div>
+      </section>
+
+      <!-- ========================================= -->
+      <!-- RECENTLY PLAYED PAGE                      -->
+      <!-- ========================================= -->
+      <section class="page" id="page-recently">
+        <div class="page-header">
+          <h1>Recently Played</h1>
+          <p>Songs you've listened to recently</p>
+        </div>
+        <div class="song-list" id="recently-list"></div>
+        <div class="empty-state hidden" id="recently-empty">
+          <div class="empty-icon">
+            <i class="ph ph-clock-counter-clockwise"></i>
+          </div>
+          <h3>No recently played</h3>
+          <p>Start playing songs to see your history</p>
+        </div>
+      </section>
+
+      <!-- ========================================= -->
+      <!-- SETTINGS PAGE                             -->
+      <!-- ========================================= -->
+      <section class="page" id="page-settings">
+        <div class="page-header">
+          <h1>Settings</h1>
+          <p>Customize your experience</p>
+        </div>
+        <div class="settings-grid">
+          <div class="settings-card">
+            <h3>Appearance</h3>
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-name">Animated Background</span>
+                <span class="setting-desc">Enable animated gradient background</span>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="setting-animated-bg" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-name">Album Art Animation</span>
+                <span class="setting-desc">Rotate disc when playing</span>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="setting-disc-rotate" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h3>Playback</h3>
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-name">Autoplay</span>
+                <span class="setting-desc">Automatically play next song</span>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="setting-autoplay" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-name">Default Volume</span>
+                <span class="setting-desc">Set your preferred volume level</span>
+              </div>
+              <div class="volume-slider-container">
+                <input type="range" class="volume-slider" id="setting-volume" min="0" max="100" value="70">
+                <span class="volume-value">70%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h3>Data Management</h3>
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-name">Total Songs</span>
+                <span class="setting-desc" id="setting-total-songs">0 songs stored</span>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-name">Storage Used</span>
+                <span class="setting-desc" id="setting-storage-used">Calculating...</span>
+              </div>
+            </div>
+            <div class="setting-actions">
+              <button class="btn-danger" id="clear-all-btn">
+                <i class="ph-fill ph-trash"></i>
+                Delete All Songs
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ========================================= -->
+    <!-- FULL MUSIC PLAYER PAGE                    -->
+    <!-- ========================================= -->
+    <div class="full-player" id="full-player">
+      <div class="full-player-bg" id="full-player-bg"></div>
+      <div class="full-player-overlay"></div>
+      <button class="full-player-close" id="full-player-close">
+        <i class="ph ph-caret-down"></i>
+      </button>
+      <div class="full-player-content">
+        <div class="full-player-left">
+          <div class="full-disc-container">
+            <div class="full-disc" id="full-disc">
+              <div class="disc-img" id="full-disc-img"></div>
+              <div class="disc-groove"></div>
+              <div class="disc-label"></div>
+            </div>
+            <div class="disc-shadow"></div>
+          </div>
+        </div>
+        <div class="full-player-right">
+          <div class="full-song-info">
+            <h2 class="full-song-title" id="full-song-title">Select a Song</h2>
+            <p class="full-song-artist" id="full-song-artist">-</p>
+            <span class="full-song-genre" id="full-song-genre">-</span>
+          </div>
+          <div class="lyrics-placeholder" id="lyrics-section">
+            <i class="ph ph-music-notes"></i>
+            <p>Lyrics not available</p>
+            <span>Enjoy the music</span>
+          </div>
+          <div class="full-progress-section">
+            <div class="progress-bar" id="full-progress-bar">
+              <div class="progress-fill" id="full-progress-fill"></div>
+              <div class="progress-handle" id="full-progress-handle"></div>
+            </div>
+            <div class="time-display">
+              <span id="full-current-time">0:00</span>
+              <span id="full-total-time">0:00</span>
+            </div>
+          </div>
+          <div class="full-controls">
+            <button class="ctrl-btn" id="full-shuffle-btn" title="Shuffle">
+              <i class="ph ph-shuffle"></i>
+            </button>
+            <button class="ctrl-btn ctrl-lg" id="full-prev-btn" title="Previous">
+              <i class="ph-fill ph-skip-back"></i>
+            </button>
+            <button class="ctrl-btn ctrl-play" id="full-play-btn" title="Play/Pause">
+              <i class="ph-fill ph-play"></i>
+            </button>
+            <button class="ctrl-btn ctrl-lg" id="full-next-btn" title="Next">
+              <i class="ph-fill ph-skip-forward"></i>
+            </button>
+            <button class="ctrl-btn" id="full-repeat-btn" title="Repeat">
+              <i class="ph ph-repeat"></i>
+            </button>
+          </div>
+          <div class="full-volume-section">
+            <button class="vol-btn" id="full-vol-btn">
+              <i class="ph-fill ph-speaker-high"></i>
+            </button>
+            <div class="vol-slider-container">
+              <input type="range" class="vol-slider" id="full-vol-slider" min="0" max="100" value="70">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- MINI PLAYER (Sticky Bottom)               -->
+    <!-- ========================================= -->
+    <div class="mini-player" id="mini-player">
+      <div class="mini-progress" id="mini-progress">
+        <div class="mini-progress-fill" id="mini-progress-fill"></div>
+      </div>
+      <div class="mini-player-inner">
+        <div class="mini-left">
+          <div class="mini-cover-container" id="mini-player-cover">
+            <div class="mini-cover-img" id="mini-cover-img"></div>
+          </div>
+          <div class="mini-song-info" id="mini-song-info">
+            <span class="mini-song-title" id="mini-song-title">No song selected</span>
+            <span class="mini-song-artist" id="mini-song-artist">-</span>
+          </div>
+        </div>
+        <div class="mini-center">
+          <button class="mini-ctrl" id="mini-shuffle" title="Shuffle">
+            <i class="ph ph-shuffle"></i>
+          </button>
+          <button class="mini-ctrl" id="mini-prev" title="Previous">
+            <i class="ph-fill ph-skip-back"></i>
+          </button>
+          <button class="mini-ctrl mini-play" id="mini-play" title="Play/Pause">
+            <i class="ph-fill ph-play"></i>
+          </button>
+          <button class="mini-ctrl" id="mini-next" title="Next">
+            <i class="ph-fill ph-skip-forward"></i>
+          </button>
+          <button class="mini-ctrl" id="mini-repeat" title="Repeat">
+            <i class="ph ph-repeat"></i>
+          </button>
+        </div>
+        <div class="mini-right">
+          <div class="mini-equalizer" id="mini-equalizer">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <button class="mini-ctrl" id="mini-expand" title="Expand">
+            <i class="ph ph-caret-up"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================= -->
+  <!-- DELETE CONFIRMATION MODAL                 -->
+  <!-- ========================================= -->
+  <div class="modal-overlay hidden" id="delete-modal">
+    <div class="modal">
+      <div class="modal-icon delete">
+        <i class="ph-fill ph-warning"></i>
+      </div>
+      <h3 class="modal-title">Delete Song</h3>
+      <p class="modal-text">Are you sure you want to delete this song? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="delete-cancel">Cancel</button>
+        <button class="btn-danger" id="delete-confirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- CLEAR ALL CONFIRMATION MODAL              -->
+  <!-- ========================================= -->
+  <div class="modal-overlay hidden" id="clear-modal">
+    <div class="modal">
+      <div class="modal-icon delete">
+        <i class="ph-fill ph-warning"></i>
+      </div>
+      <h3 class="modal-title">Delete All Songs</h3>
+      <p class="modal-text">Are you sure you want to delete ALL songs? This will permanently remove everything from your library.</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="clear-cancel">Cancel</button>
+        <button class="btn-danger" id="clear-confirm">Delete All</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- TOAST NOTIFICATIONS                       -->
+  <!-- ========================================= -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Audio Element -->
+  <audio id="audio-element" preload="metadata"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
